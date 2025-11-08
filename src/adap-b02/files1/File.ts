@@ -1,44 +1,48 @@
 export class File {
+  private openFlag = false
+  private deleted = false
+  private data: Object[] = []
 
-    public isOpen(): boolean {
-      throw new Error("incomplete example code");
-    }
-  
-    public isClosed(): boolean {
-        throw new Error("incomplete example code");
-    }
-  
-    public open(): void {
-      this.assertIsClosedFile();
-      throw new Error("incomplete example code");
-    }
+  public isOpen(): boolean {
+    return this.openFlag && !this.deleted;
+  }
 
-    public read(): Object[] {
-      this.assertIsOpenFile();
-      throw new Error("incomplete example code");
-    }
+  public isClosed(): boolean {
+    return !this.openFlag && !this.deleted;
+  }
 
-    public write(data: Object[]): void {
-      this.assertIsOpenFile();
-      throw new Error("incomplete example code");
-    }
-  
-    public close(): void {
-      this.assertIsOpenFile();
-      throw new Error("incomplete example code");
-    }
+  public open(): void {
+    this.assertIsClosedFile();
+    this.openFlag = true;
+  }
 
-    public delete(): void {
-      this.assertIsClosedFile();
-      throw new Error("incomplete example code");
-    }
+  public read(): Object[] {
+    this.assertIsOpenFile();
+    return [...this.data];
+  }
 
-    protected assertIsOpenFile(): void {
-        throw new Error("incomplete example code");
-    }
+  public write(data: Object[]): void {
+    this.assertIsOpenFile();
+    this.data.push(...data);
+  }
 
-    protected assertIsClosedFile(): void {
-        throw new Error("incomplete example code");
-    }
+  public close(): void {
+    this.assertIsOpenFile();
+    this.openFlag = false;
+  }
+
+  public delete(): void {
+    this.assertIsClosedFile();
+    this.deleted = true;
+    this.data = [];
+  }
+
+  protected assertIsOpenFile(): void {
+    if (!this.openFlag || this.deleted) throw new Error("file is not open");
+  }
+
+  protected assertIsClosedFile(): void {
+     if (this.openFlag || this.deleted) throw new Error("file is not closed");
+  }
 
 }

@@ -7,65 +7,105 @@ export class StringName extends AbstractName {
     protected name: string = "";
     protected noComponents: number = 0;
 
+        protected components: string[] = [];
+
     constructor(source: string, delimiter?: string) {
         super();
-        throw new Error("needs implementation or deletion");
+        super(delimiter ?? DEFAULT_DELIMITER);
+        this.components = this.parseDataString(source);
+        this.updateCache(source);
+    }
+
+        private updateCache(dataString?: string): void {
+        this.noComponents = this.components.length;
+        if (dataString !== undefined) {
+            this.name = dataString;
+        } else {
+            // Data-String über die Logik aus AbstractName erzeugen
+            this.name = super.asDataString();
+        }
+    }
+
+        protected doClone(): Name {
+        // clone anhand des aktuellen Data-Strings
+        return new StringName(this.asDataString(), this.delimiter);
     }
 
     public clone(): Name {
-        throw new Error("needs implementation or deletion");
+        return super.clone();
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        return super.asString(delimiter);
     }
 
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        const data = super.asDataString();
+        this.updateCache(data);
+        return this.name;
     }
 
     public isEqual(other: Name): boolean {
-        throw new Error("needs implementation or deletion");
+        return super.isEqual(other);
     }
 
     public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
+        return super.getHashCode();
     }
 
     public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+        return super.isEmpty();
     }
 
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+        return super.getDelimiterCharacter();
     }
 
     public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+          return this.components.length;
     }
 
     public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+        this.assertIndexInRange(i);
+        return this.components[i];
     }
 
     public setComponent(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
+        this.assertIndexInRange(i);
+        this.components[i] = c;
+        this.updateCache();
     }
 
     public insert(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
+        if (i < 0 || i > this.components.length) {
+            throw new RangeError("Index out of range");
+        }
+        this.components.splice(i, 0, c);
+        this.updateCache();
     }
 
     public append(c: string) {
-        throw new Error("needs implementation or deletion");
+        this.components.push(c);
+        this.updateCache();
     }
 
     public remove(i: number) {
-        throw new Error("needs implementation or deletion");
+        this.assertIndexInRange(i);
+        this.components.splice(i, 1);
+        this.updateCache();
     }
 
     public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+        for (let i = 0; i < other.getNoComponents(); i++) {
+            this.components.push(other.getComponent(i));
+        }
+        this.updateCache();
+    }
+
+        private assertIndexInRange(i: number): void {
+        if (i < 0 || i >= this.components.length) {
+            throw new RangeError("Index out of range");
+        }
     }
 
 }

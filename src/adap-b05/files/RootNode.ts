@@ -4,18 +4,20 @@ import { Directory } from "./Directory";
 
 export class RootNode extends Directory {
 
-    protected static ROOT_NODE: RootNode = new RootNode();
+    //protected static ROOT_NODE: RootNode = new RootNode();
 
-    public static getRootNode() {
-        return this.ROOT_NODE;
-    }
+    //public static getRootNode() {
+    //  return this.ROOT_NODE;
+    //}
 
     constructor() {
-        super("", new Object as Directory);
+        super("", {} as Directory);
+
+        this.parentNode = this;
     }
 
     protected initialize(pn: Directory): void {
-        this.parentNode = this;
+        // absichtlich leer
     }
 
     public getFullName(): Name {

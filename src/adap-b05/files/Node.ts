@@ -62,8 +62,9 @@ export class Node {
 
         try {
             const base = this.getBaseName();
+            const isRoot = (this.getParentNode() as any) === (this as any);
 
-            if (base === "" || base === null || base === undefined) {
+            if (!isRoot && (base === "" || base == null)) {
                 throw new InvalidStateException("invalid basename");
             }
 
@@ -71,27 +72,24 @@ export class Node {
                 result.add(this);
             }
 
-            const maybeDir: any = this;
+            const maybeDir = this as any;
 
             if (typeof maybeDir.getChildNodes === "function") {
                 for (const child of maybeDir.getChildNodes()) {
-                    const matches = child.findNodes(bn);
-                    for (const m of matches) {
-                        result.add(m);
+                    for (const found of child.findNodes(bn)) {
+                        result.add(found);
                     }
                 }
             }
 
             return result;
-
         } catch (ex) {
-
             if (ex instanceof InvalidStateException) {
                 throw new ServiceFailureException("service failed", ex);
             }
-            
             throw ex;
         }
+
     }
 
 }

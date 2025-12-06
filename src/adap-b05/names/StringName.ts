@@ -17,7 +17,7 @@ export class StringName extends AbstractName {
         return new StringName("", this.delimiter);
     }
 
-        protected splitComponents(): string[] {
+    protected splitComponents(): string[] {
         if (this.name === "") return [];
         return this.name.split(this.delimiter);
     }
@@ -38,8 +38,15 @@ export class StringName extends AbstractName {
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        const comps = this.splitComponents();
-        return comps.join(delimiter);
+        let s = this.name;
+
+        // wenn delimiter '/', dann soll absoluter Pfad "/" beginnen
+        if (delimiter === '/' && !s.startsWith('/')) {
+            s = '/' + s;
+        }
+
+        return s;
+
     }
 
     public asDataString(): string {
